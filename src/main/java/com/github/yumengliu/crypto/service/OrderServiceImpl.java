@@ -7,6 +7,7 @@ import com.github.yumengliu.crypto.repository.OrderRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -14,7 +15,8 @@ import java.util.UUID;
 @Service
 public class OrderServiceImpl implements OrderService{
 
-    private static final double TRADING_PERCENTAGE = 1.0;
+    @Value("${TRADING_PERCENTAGE: 1.0}")
+    private double trading_percentage;
     private static final Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
 
     private final AccountRepository accountRepository;
@@ -50,7 +52,7 @@ public class OrderServiceImpl implements OrderService{
         btcOrder.setExecuted(true);
         Account account = btcOrder.getAccount();
 
-        double moneyToBuyBtc = account.getUsdBalance() * TRADING_PERCENTAGE;
+        double moneyToBuyBtc = account.getUsdBalance() * trading_percentage;
         double btcAmount = moneyToBuyBtc / price;
 
         account.buyBtc(btcAmount, moneyToBuyBtc);
